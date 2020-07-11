@@ -11,9 +11,6 @@ class LabirintSpider(scrapy.Spider):
 
     def parse(self, response:HtmlResponse):
 
-        with open('temp.html', 'w', encoding='utf-8') as f:
-            f.write(response.text)
-
         next_page = response.xpath("//div[@class='pagination-next']/a/@href").extract_first()
         next_page = response.url[:response.url.find('?')] + next_page
 
