@@ -17,4 +17,5 @@ class BooksparserItem(scrapy.Item):
     rate = scrapy.Field()
     genre = scrapy.Field()
     annotation = scrapy.Field()
+    added_at = scrapy.Field()
 

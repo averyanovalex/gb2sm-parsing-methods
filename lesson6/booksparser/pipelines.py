@@ -8,6 +8,7 @@
 from itemadapter import ItemAdapter
 
 from pymongo import MongoClient
+from _datetime import datetime
 
 
 class BooksparserPipeline:
@@ -15,7 +16,6 @@ class BooksparserPipeline:
     def __init__(self):
         self.client = MongoClient('localhost', 27017)
         self.mongodb = self.client.books
-
 
     def __del__(self):
         self.client.close()
@@ -34,9 +34,18 @@ class BooksparserPipeline:
             item['price'] = None if item['price'] is None else int(item['price'])
             item['rate'] = float(item['rate'])
 
-            if self.mongodb.labirint.count_documents({'_id': item['_id']}) == 0:
-                self.mongodb.labirint.insert_one(item)
+        elif spider.name == 'book24':
 
+            item['_id'] = item['href'][item['href'].rfind('-')+1:-1]
+            item['authors']  = None if item['authors'] is None else ', '.join(item['authors'])
+            item['rate'] = None if item['rate'] is None else float(item['rate'].replace(',', '.'))
+            item['genre'] = item['genre'][1:]
+            item['annotation'] = None if len(item['annotation']) == 0 else '\n'.join(item['annotation'])
+            item['special_price'] = None if item['special_price'] is None else int(item['special_price'].replace(' ', ''))
+            item['price'] = item['special_price'] if item['price'] is None else int(item['price'][:-3].replace(' ', ''))
 
+        if self.mongodb[spider.name].count_documents({'_id': item['_id']}) == 0:
+            item['added_at'] = datetime.now()
+            self.mongodb[spider.name].insert_one(item)
 
         return item

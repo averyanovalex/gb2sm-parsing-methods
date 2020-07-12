@@ -6,13 +6,13 @@ from booksparser.items import BooksparserItem
 class LabirintSpider(scrapy.Spider):
     name = 'labirint'
     allowed_domains = ['labirint.ru']
-    #жанр "информационные технологии", ~1900 книг
     start_urls = ['https://www.labirint.ru/genres/2304/?page=1']
 
     def parse(self, response:HtmlResponse):
 
         next_page = response.xpath("//div[@class='pagination-next']/a/@href").extract_first()
-        next_page = response.url[:response.url.find('?')] + next_page
+        if next_page is not None:
+            next_page = response.url[:response.url.find('?')] + next_page
 
         #stop while develop
         #if next_page[-1] == '3': return
@@ -21,8 +21,10 @@ class LabirintSpider(scrapy.Spider):
         for link in book_links:
             yield response.follow(link, self.parse_book)
 
-
-        yield response.follow(next_page, callback=self.parse)
+        if next_page is None:
+            return
+        else:
+            yield response.follow(next_page, callback=self.parse)
 
 
     def parse_book(self, response:HtmlResponse):
