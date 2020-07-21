@@ -9,6 +9,8 @@
 
 BOT_NAME = 'instaparser'
 
+IMAGES_STORE = 'photo'
+
 SPIDER_MODULES = ['instaparser.spiders']
 NEWSPIDER_MODULE = 'instaparser.spiders'
 
@@ -23,7 +25,7 @@ LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -51,7 +53,6 @@ DOWNLOAD_DELAY = 1.25
 #    'instaparser.middlewares.InstaparserSpiderMiddleware': 543,
 #}
 
-#TODO: Включить мидлвеар
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -68,10 +69,10 @@ DOWNLOAD_DELAY = 1.25
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'instaparser.pipelines.InstaparserPipeline': 300,
+    'instaparser.pipelines.InstagramPhotosPipeline': 200,
+    'instaparser.pipelines.DataBasePipeline': 300,
 }
 
-#TODO: Включить автоподстройку паузы
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
